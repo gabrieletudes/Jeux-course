@@ -1,9 +1,9 @@
-/* Jeux_course/Racing_time
+/* hepl-mmi/zwazo
  *
  * /Gruntfile.js - Grunt configuration file
  *
- * coded by Gabriel!
- * started at 16/05/2016
+ * coded by leny@flatLand!
+ * started at 18/04/2016
  */
 
 "use strict";
