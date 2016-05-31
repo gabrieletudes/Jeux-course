@@ -106,7 +106,7 @@
                     "dh": 1280
                 },
                 //   velocite
-                "speed": 5,
+                "speed": 6,
                 //   maxOffset of background
                 "maxOffset": ( game.app.height - game.app.height ) - 10,
                 //   dessiner l'image
@@ -143,7 +143,12 @@
                     "dh": 115
                 },
                 "state": {
-                    "move": false
+                    "move": false,
+                    "isInSafeZone": false
+                },
+                "score": {
+                    "current": 0,
+                    "previous": 0
                 },
                 "position": {
                     "top": 0,
@@ -188,34 +193,41 @@
                     }
 
                     //    update hitzone border
-                    this.position.top = this.frame.dy - this.frame.dh;
+                    this.position.top = ( this.frame.dy - this.frame.dh ) + 115;
 
                     this.position.bottom = this.frame.dy + this.frame.dh;
 
-                    this.position.left = ( this.frame.dx + this.frame.dw ) / 2 - 10;
+                    this.position.left = ( this.frame.dx + this.frame.dw ) - 5;
 
-                    this.position.right = ( this.frame.dx - this.frame.dw ) / 2 + 10;
+                    this.position.right = ( this.frame.dx + this.frame.dw ) + 55;
 
-                    //   check car hitzones collition
+                    //   check car hitzones collision
                     game.cars.forEach( function( oCar ) {
                         var oPosition = self.position,
-                            oCarTop = oCar.frame.top.dy - oCar.frame.top.dh,
-                            oCarBottom = oCar.frame.top.dy + oCar.frame.top.dh,
+                            oCarTop = ( oCar.frame.top.dy - oCar.frame.top.dh ) + 10,
+                            oCarBottom = ( oCar.frame.top.dy + oCar.frame.top.dh ) + 10,
                             oCarRight = oCar.frame.top.dx + oCar.frame.top.dw,
-                            oCarLeft = oCar.frame.top.dx - oCar.frame.top.dw;
+                            oCarLeft = ( oCar.frame.top.dx - oCar.frame.top.dw ) + 60;
 
-                        //   collitions
-                        if ( oPosition.left > oCarRight && oPosition.right > oCarLeft || oPosition.top > oCarBottom && oPosition.bottom > oCarTop ) {
-                            if (
-                                ( oPosition.left < oCarRight && oPosition.top < oCarBottom ) || ( oPosition.right > oCarLeft && oPosition.top > oCarBottom ) ) {
+                        //   collisions
+                        if ( ( oPosition.left < oCarRight && oPosition.right > oCarLeft ) ) {
+                            if ( oPosition.top < oCarBottom && oPosition.top > oCarTop ) {
                                 game.over();
-                            } else {
-                                //   self.state.isInDangerZone = true;
-                                console.log( "Safe" );
+                            }else {
+                                self.state.isInSafeZone = true;
                             }
                         }
-                    } );
+                        // update score when key are pressed and cars are avoid
+                        if ( self.state.isInSafeZone ) {
 
+                            if ( self.score.current === self.score.previous ) {
+                                self.score.current++;
+                            }
+                        }else {
+                            self.score.previous = self.score.current;
+                        }
+                        self.state.isInSafeZone = false;
+                    } );
                 }
 
             };
@@ -277,7 +289,6 @@
                     iPairWidth = Cars.generateNextCarWidth();
                     //   des largeur differentes
                     this.frame.top.dx = iPairWidth;
-                    console.log( "this frame dx " + this.frame.top.dx );
                 }
 
                 this.draw();
@@ -354,8 +365,13 @@
                 window.cancelAnimationFrame( this.animationRequestID );
                 //   jeux termine ?
                 this.ended = true;
-                //   draw game over
+                //  draw game over
                 this.overscreen.draw();
+                //  draw score
+                game.app.context.strokeStyle = "#F5A623";
+                game.app.context.font = "25.9px sans-serif";
+                game.app.context.textAlign = "end";
+                game.app.context.strokeText( this.greencar.score.current * 100, ( game.app.width / 2 ) + 102, ( game.app.height / 2 ) + 60 );
             };
     //   game over fin
 
