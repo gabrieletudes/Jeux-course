@@ -1,9 +1,9 @@
 {
-  "name": “Racing Time”,
+  "name": "zwazo",
   "version": "0.0.1",
   "private": true,
-  "description": “A racing game inspired by the retro racing game where you have to avoid the colilsion with other cars“,
-  "author": “Gabriel”,
+  "description": "A simple implementation of the game Flappy Bird, with javascript/canvas.",
+  "author": "Pierre-Antoine \"leny\" Delnatte <info@flatland.be>",
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-contrib-watch": "^0.6.1",
