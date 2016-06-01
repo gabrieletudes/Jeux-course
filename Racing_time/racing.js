@@ -170,7 +170,7 @@
 
                     if ( oEvent ) {
                         if ( oEvent.type === "keyup" && key === 37 || key === 39 ) {
-                            if ( !game.ended ) {
+                            if ( !game.over.ended ) {
                                 if ( !this.state.move ) {
                                     //   since we know that this is the first click, we can generate
                                     Cars.generate( 4 );
@@ -201,11 +201,12 @@
 
                     this.position.right = ( this.frame.dx + this.frame.dw ) + 55;
 
+
                     //   check car hitzones collision
                     game.cars.forEach( function( oCar ) {
                         var oPosition = self.position,
-                            oCarTop = ( oCar.frame.top.dy - oCar.frame.top.dh ) + 10,
-                            oCarBottom = ( oCar.frame.top.dy + oCar.frame.top.dh ) + 10,
+                            oCarTop = oCar.frame.top.dy + oCar.frame.top.dh,
+                            oCarBottom = ( oCar.frame.top.dy - oCar.frame.top.dh ) + 115,
                             oCarRight = oCar.frame.top.dx + oCar.frame.top.dw,
                             oCarLeft = ( oCar.frame.top.dx - oCar.frame.top.dw ) + 60;
 
@@ -213,6 +214,7 @@
                         if ( ( oPosition.left < oCarRight && oPosition.right > oCarLeft ) ) {
                             if ( oPosition.top < oCarBottom && oPosition.top > oCarTop ) {
                                 game.over();
+
                             }else {
                                 self.state.isInSafeZone = true;
                             }
@@ -291,6 +293,12 @@
                     this.frame.top.dx = iPairWidth;
                 }
 
+                // detect vertical collisions
+                if ( game.greencar.frame.dy < this.frame.top.dy + this.frame.top.dh && game.greencar.frame.dx <= this.frame.top.dx + this.frame.top.dw ) {
+                    game.over();
+                }else {
+                    console.log( "is ok" );
+                }
                 this.draw();
             };
             //   start gestion cars
@@ -372,6 +380,7 @@
                 game.app.context.font = "25.9px sans-serif";
                 game.app.context.textAlign = "end";
                 game.app.context.strokeText( this.greencar.score.current * 100, ( game.app.width / 2 ) + 102, ( game.app.height / 2 ) + 60 );
+
             };
     //   game over fin
 
@@ -388,7 +397,7 @@
                 this.cars = [];
                 this.time.start = Date.now();
                 this.started = false;
-                this.ended = false;
+                game.over.ended = false;
 
                 //   launch animation
                 this.animate();
